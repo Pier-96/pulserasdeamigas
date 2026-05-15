@@ -5,15 +5,18 @@ import BraceletGallery from './components/BraceletGallery';
 import Location from './components/Location';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import LanguageSelector from './components/LanguageSelector';
+import { LanguageProvider } from './context/LanguageContext';
 import { siteConfig } from './data/config';
 
-function App() {
+function AppContent() {
   useEffect(() => {
     document.title = `${siteConfig.brandName} - Pulseras Artesanales`;
   }, []);
 
   return (
     <div className="min-h-screen bg-pastel-cream">
+      <LanguageSelector />
       <Hero />
       <About />
       <BraceletGallery />
@@ -21,6 +24,14 @@ function App() {
       <Contact />
       <Footer />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <LanguageProvider>
+      <AppContent />
+    </LanguageProvider>
   );
 }
 

@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { fetchBracelets, getDemoBracelets } from '../services/googleSheets';
+import { useLanguage } from '../context/LanguageContext';
 
 const BraceletGallery = () => {
+  const { t } = useLanguage();
   const [bracelets, setBracelets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -51,7 +53,7 @@ const BraceletGallery = () => {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-10">
             <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-dark mb-2">
-              Nuestras Pulseras
+              {t('galleryTitle')}
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-primary-light via-primary to-primary-light mx-auto rounded-full"></div>
           </div>
@@ -78,12 +80,11 @@ const BraceletGallery = () => {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-primary-dark mb-2">
-            Nuestras Pulseras
+            {t('galleryTitle')}
           </h2>
           <div className="w-24 h-1 bg-gradient-to-r from-primary-light via-primary to-primary-light mx-auto rounded-full"></div>
         </div>
 
-        {/* Botones de navegación */}
         <div className="hidden md:flex justify-between items-center mb-6">
           <button 
             onClick={() => scroll('left')}
@@ -104,11 +105,10 @@ const BraceletGallery = () => {
           </button>
         </div>
 
-        {/* Carrusel de pulseras */}
         {bracelets.length === 0 ? (
           <div className="text-center py-12">
             <div className="text-5xl mb-4">🌈</div>
-            <p className="text-gray-500 text-lg font-body">¡Pronto añadiremos nuevas pulseras!</p>
+            <p className="text-gray-500 text-lg font-body">{t('galleryEmpty')}</p>
           </div>
         ) : (
           <div 
@@ -122,7 +122,6 @@ const BraceletGallery = () => {
                 className="flex-shrink-0 w-72 bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
                 style={{ scrollSnapAlign: 'start' }}
               >
-                {/* Imagen */}
                 <div className="relative w-full h-48 rounded-xl overflow-hidden mb-4 bg-pastel-cream">
                   <img 
                     src={bracelet.imagen_url} 
@@ -130,23 +129,21 @@ const BraceletGallery = () => {
                     className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
                     onError={handleImageError}
                   />
-                  {/* Badge de estado */}
                   <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold ${
                     bracelet.estado?.toLowerCase() === 'disponible' 
                       ? 'bg-green-100 text-green-700' 
                       : 'bg-red-100 text-red-700'
                   }`}>
-                    {bracelet.estado || 'Disponible'}
+                    {bracelet.estado?.toLowerCase() === 'disponible' ? t('available') : t('notAvailable')}
                   </div>
                 </div>
 
-                {/* Info */}
                 <div className="text-center">
                   <h3 className="font-display text-lg font-semibold text-gray-700 mb-2">
                     {bracelet.nombre}
                   </h3>
                   <p className="text-primary-dark font-bold text-xl">
-                    {bracelet.precio || 'Consultar'}
+                    {bracelet.precio || t('price')}
                   </p>
                 </div>
               </div>
