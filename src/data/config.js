@@ -45,5 +45,5 @@ export const siteConfig = {
   
   // Google Sheets URL para las pulseras
   // Ver documentación en src/services/googleSheets.js
-  sheetsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vexample/pub?output=csv'
+  sheetsUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZ7MHLrOvCt_u1gouqJ3agnImLbi05RLzBTJaZxdJeeQqPmeDIjXrGfbODENtAlSkpiTI8jj_-UjHu/pub?gid=0&single=true&output=csv',
 };

@@ -14,7 +14,9 @@
 
 // CONFIGURACIÓN - Cambia esta URL por tu Google Sheet público
 // Ejemplo de URL pública: 'https://docs.google.com/spreadsheets/d/e/2PACX-1v.../pub?output=csv'
-export const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vexample/pub?output=csv';
+
+import { siteConfig } from '../data/config';
+export const SHEET_URL = siteConfig.sheetsUrl;
 
 /**
  * Obtiene los datos de pulseras desde Google Sheets
