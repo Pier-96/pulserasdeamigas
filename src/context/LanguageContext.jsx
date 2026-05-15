@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const translations = {
   es: {
-    heroTagline: 'Pulseras artesanales feitas con mucho amor ✨',
+    heroTagline: 'Pulseras artesanales hechas con mucho amor ✨',
     primaryButton: 'Ver Pulseras',
     secondaryButton: 'Contactar',
     aboutTitle: '¿Quiénes somos?',

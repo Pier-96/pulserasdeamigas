@@ -5,7 +5,7 @@
 
 export const siteConfig = {
   // Nombre de la marca
-  brandName: 'Las Pulseritas',
+  brandName: 'Pulseras de Amigas',
   
   // Frase descriptiva del hero
   heroTagline: 'Pulseras artesanales hechas con mucho amor ✨',
