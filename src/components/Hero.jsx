@@ -22,7 +22,7 @@ const Hero = () => {
       </div>
 
       <div className="relative mb-8 animate-fade-in">
-        <div className="w-40 h-40 md:w-48 md:h-48 rounded-full bg-white/60 backdrop-blur-sm shadow-lg flex items-center justify-center border-4 border-primary-light/30 overflow-hidden">
+        <div className="w-48 h-48 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-full bg-white/60 backdrop-blur-sm shadow-lg flex items-center justify-center border-4 border-primary-light/30 overflow-hidden">
           {siteConfig.logo?.startsWith('/') || siteConfig.logo?.startsWith('http') ? (
             <img 
               src={siteConfig.logo} 
