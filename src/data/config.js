@@ -18,7 +18,7 @@ export const siteConfig = {
   logo: '/logo.jpg',
   
   // Datos de contacto
-  phone: '+34612345678',
+  phone: '+34689468050',
   whatsappMessage: '¡Hola! Me gustaría conocer las pulseras disponibles 💖',
   
   // Google Maps - URL embebida
