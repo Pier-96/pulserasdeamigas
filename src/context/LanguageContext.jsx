@@ -21,6 +21,7 @@ const translations = {
     unique: 'Único',
     available: 'Disponible',
     notAvailable: 'No disponible',
+    onSale: 'Oferta',
     price: 'Consultar',
   },
   ca: {
@@ -43,6 +44,7 @@ const translations = {
   unique: 'Únic',
   available: 'Disponible',
   notAvailable: 'No disponible',
+  onSale: 'Oferta',
   price: 'Consultar',
   },
 };

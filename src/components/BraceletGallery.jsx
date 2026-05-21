@@ -119,7 +119,7 @@ const BraceletGallery = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 md:hidden">
-            {bracelets.slice(0, 6).map((bracelet, index) => (
+            {bracelets.map((bracelet, index) => (
               <div
                 key={index}
                 className="bg-white rounded-2xl p-3 shadow-lg hover:shadow-xl transition-all duration-300"
@@ -137,9 +137,11 @@ const BraceletGallery = () => {
                   <div className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-semibold ${
                     bracelet.estado?.toLowerCase() === 'disponible'
                       ? 'bg-green-100 text-green-700'
+                      : bracelet.estado?.toLowerCase() === 'oferta'
+                      ? 'bg-yellow-100 text-yellow-700'
                       : 'bg-red-100 text-red-700'
                   }`}>
-                    {bracelet.estado?.toLowerCase() === 'disponible' ? t('available') : t('notAvailable')}
+                    {bracelet.estado?.toLowerCase() === 'disponible' ? t('available') : bracelet.estado?.toLowerCase() === 'oferta' ? t('onSale') : t('notAvailable')}
                   </div>
                 </div>
                 <div className="text-center">
@@ -179,9 +181,11 @@ const BraceletGallery = () => {
                   <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold ${
                     bracelet.estado?.toLowerCase() === 'disponible'
                       ? 'bg-green-100 text-green-700'
+                      : bracelet.estado?.toLowerCase() === 'oferta'
+                      ? 'bg-yellow-100 text-yellow-700'
                       : 'bg-red-100 text-red-700'
                   }`}>
-                    {bracelet.estado?.toLowerCase() === 'disponible' ? t('available') : t('notAvailable')}
+                    {bracelet.estado?.toLowerCase() === 'disponible' ? t('available') : bracelet.estado?.toLowerCase() === 'oferta' ? t('onSale') : t('notAvailable')}
                   </div>
                 </div>
                 <div className="text-center">
