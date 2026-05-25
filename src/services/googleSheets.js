@@ -109,36 +109,42 @@ export const getDemoBracelets = () => [
     nombre: 'Pulsera Arcoíris',
     imagen_url: 'https://images.unsplash.com/photo-1611085583191-a3b181a88401?w=400&h=400&fit=crop',
     precio: '5€',
-    estado: 'Disponible'
+    estado: 'Disponible',
+    categoria: 'hilo'
   },
   {
     nombre: 'Pulsera Corazon Rosa',
     imagen_url: 'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=400&h=400&fit=crop',
     precio: '4€',
-    estado: 'Disponible'
+    estado: 'Disponible',
+    categoria: 'macrame'
   },
   {
     nombre: 'Pulsera Estrellas',
     imagen_url: 'https://images.unsplash.com/photo-1611652022419-a9419f74343d?w=400&h=400&fit=crop',
     precio: '6€',
-    estado: 'Disponible'
+    estado: 'Disponible',
+    categoria: 'hilo'
   },
   {
     nombre: 'Pulsera Mariposa',
     imagen_url: 'https://images.unsplash.com/photo-1602173574767-37ac01994b2a?w=400&h=400&fit=crop',
     precio: '5€',
-    estado: 'Agotado'
+    estado: 'Vendida',
+    categoria: 'perlas'
   },
   {
     nombre: 'Pulsera Unicornio',
     imagen_url: 'https://images.unsplash.com/photo-1606103836293-0a063b604ae0?w=400&h=400&fit=crop',
     precio: '7€',
-    estado: 'Disponible'
+    estado: 'Disponible',
+    categoria: 'perlas'
   },
   {
     nombre: 'Pulsera Flor Sakura',
     imagen_url: 'https://images.unsplash.com/photo-1618354691373-d851c5c3a990?w=400&h=400&fit=crop',
     precio: '4€',
-    estado: 'Disponible'
+    estado: 'Disponible',
+    categoria: 'macrame'
   }
 ];

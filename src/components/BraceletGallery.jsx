@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { fetchBracelets, getDemoBracelets } from '../services/googleSheets';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -8,7 +8,7 @@ const BraceletGallery = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
-  const scrollRef = useRef(null);
+  const [activeFilter, setActiveFilter] = useState('todas');
 
   useEffect(() => {
     loadBracelets();
@@ -18,7 +18,7 @@ const BraceletGallery = () => {
     try {
       setLoading(true);
       const data = await fetchBracelets();
-      
+
       if (data.length === 0) {
         setBracelets(getDemoBracelets());
       } else {
@@ -34,15 +34,22 @@ const BraceletGallery = () => {
     }
   };
 
-  const scroll = (direction) => {
-    if (scrollRef.current) {
-      const scrollAmount = 320;
-      scrollRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      });
-    }
-  };
+  const categories = useMemo(() => {
+    const cats = [...new Set(bracelets.map(b => b.categoria).filter(Boolean))];
+    return cats.sort();
+  }, [bracelets]);
+
+  const chips = useMemo(() => [
+    { value: 'todas', label: t('filterAll') },
+    { value: 'disponibles', label: t('filterAvailable') },
+    ...categories.map(cat => ({ value: cat, label: cat.charAt(0).toUpperCase() + cat.slice(1) })),
+  ], [categories, t]);
+
+  const filteredBracelets = useMemo(() => {
+    if (activeFilter === 'todas') return bracelets;
+    if (activeFilter === 'disponibles') return bracelets.filter(b => b.estado?.toLowerCase() === 'disponible');
+    return bracelets.filter(b => b.categoria === activeFilter);
+  }, [bracelets, activeFilter]);
 
   const handleImageError = (e) => {
     e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect fill="%23FDE4EC" width="200" height="200"/%3E%3Ctext x="50%25" y="50%25" text-anchor="middle" dy=".3em" font-size="40"%3E💖%3C/text%3E%3C/svg%3E';
@@ -58,22 +65,19 @@ const BraceletGallery = () => {
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-primary-light via-primary to-primary-light mx-auto rounded-full"></div>
           </div>
-          
-          <div className="grid grid-cols-2 gap-3 md:hidden">
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="bg-white rounded-2xl p-3 shadow-lg">
-                <div className="w-full h-36 rounded-xl loader-shimmer mb-3"></div>
-                <div className="h-5 w-3/4 rounded loader-shimmer mb-2"></div>
-                <div className="h-4 w-1/4 rounded loader-shimmer"></div>
-              </div>
+          <div className="flex gap-2 pb-3 mb-4">
+            {[1, 2, 3, 4].map(i => (
+              <div key={i} className="h-9 w-24 rounded-[20px] loader-shimmer flex-shrink-0"></div>
             ))}
           </div>
-          <div className="hidden md:flex gap-6 overflow-x-auto scrollbar-hide pb-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex-shrink-0 w-72 bg-white rounded-2xl p-4 shadow-lg">
-                <div className="w-full h-48 rounded-xl loader-shimmer mb-4"></div>
-                <div className="h-6 w-3/4 rounded loader-shimmer mb-2"></div>
-                <div className="h-4 w-1/4 rounded loader-shimmer"></div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+            {[1, 2, 3, 4, 5, 6].map(i => (
+              <div key={i} className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+                <div className="w-full aspect-square loader-shimmer"></div>
+                <div className="p-3 space-y-2">
+                  <div className="h-4 w-3/4 rounded loader-shimmer mx-auto"></div>
+                  <div className="h-3 w-1/4 rounded loader-shimmer mx-auto"></div>
+                </div>
               </div>
             ))}
           </div>
@@ -92,114 +96,100 @@ const BraceletGallery = () => {
           <div className="w-24 h-1 bg-gradient-to-r from-primary-light via-primary to-primary-light mx-auto rounded-full"></div>
         </div>
 
-        <div className="hidden md:flex justify-between items-center mb-6">
-          <button 
-            onClick={() => scroll('left')}
-            className="w-10 h-10 rounded-full bg-white shadow-md hover:shadow-lg transition-all flex items-center justify-center text-primary hover:bg-pastel-pink"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          
-          <button 
-            onClick={() => scroll('right')}
-            className="w-10 h-10 rounded-full bg-white shadow-md hover:shadow-lg transition-all flex items-center justify-center text-primary hover:bg-pastel-pink"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+        <div className="md:flex md:gap-8">
+          {/* Sidebar desktop */}
+          <aside className="hidden md:block w-44 flex-shrink-0">
+            <div className="md:sticky md:top-32">
+              <h3 className="font-display text-xs font-semibold text-gray-400 uppercase tracking-widest mb-3">
+                {t('filterAll')}
+              </h3>
+              <nav className="space-y-1">
+                {chips.map(chip => (
+                  <button
+                    key={chip.value}
+                    onClick={() => setActiveFilter(chip.value)}
+                    className={`block w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      activeFilter === chip.value
+                        ? 'bg-[#b541ad] text-white shadow-sm'
+                        : 'text-gray-600 hover:bg-white/60 hover:text-gray-800'
+                    }`}
+                  >
+                    {chip.label}
+                  </button>
+                ))}
+              </nav>
+            </div>
+          </aside>
+
+          <div className="flex-1 min-w-0">
+            {/* Chips móvil */}
+            <div className="flex overflow-x-auto scrollbar-hide gap-2 pb-3 md:hidden">
+              {chips.map(chip => (
+                <button
+                  key={chip.value}
+                  onClick={() => setActiveFilter(chip.value)}
+                  className={`flex-shrink-0 px-5 py-2 rounded-[20px] text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
+                    activeFilter === chip.value
+                      ? 'bg-[#b541ad] text-white shadow-sm'
+                      : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:shadow-sm'
+                  }`}
+                >
+                  {chip.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Contador */}
+            <p className="text-sm text-gray-500 font-body mb-4">
+              {t('showing')} {filteredBracelets.length} {t('items')}
+            </p>
+
+            {filteredBracelets.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="text-5xl mb-4">🌈</div>
+                <p className="text-gray-500 text-lg font-body">{t('galleryEmpty')}</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+                {filteredBracelets.map((bracelet, index) => (
+                  <div
+                    key={index}
+                    className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
+                  >
+                    <div
+                      className="relative w-full aspect-square overflow-hidden bg-pastel-cream cursor-pointer"
+                      onClick={() => setSelectedImage(bracelet.imagen_url)}
+                    >
+                      <img
+                        src={bracelet.imagen_url}
+                        alt={bracelet.nombre}
+                        className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
+                        onError={handleImageError}
+                      />
+                      <span className={`absolute top-2 right-2 px-2.5 py-0.5 rounded-full text-[11px] font-semibold leading-tight ${
+                        bracelet.estado?.toLowerCase() === 'disponible'
+                          ? 'bg-green-100 text-green-700'
+                          : bracelet.estado?.toLowerCase() === 'oferta'
+                          ? 'bg-yellow-100 text-yellow-700'
+                          : 'bg-red-100 text-red-700'
+                      }`}>
+                        {bracelet.estado?.toLowerCase() === 'disponible' ? t('available') : bracelet.estado?.toLowerCase() === 'oferta' ? t('onSale') : t('notAvailable')}
+                      </span>
+                    </div>
+                    <div className="p-3 text-center">
+                      <h3 className="font-display text-sm font-semibold text-gray-700 mb-1 leading-tight">
+                        {bracelet.nombre}
+                      </h3>
+                      <p className="text-primary-dark font-bold text-sm">
+                        {bracelet.precio || t('price')} €
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-
-        {bracelets.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-5xl mb-4">🌈</div>
-            <p className="text-gray-500 text-lg font-body">{t('galleryEmpty')}</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-3 md:hidden">
-            {bracelets.map((bracelet, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl p-3 shadow-lg hover:shadow-xl transition-all duration-300"
-              >
-                <div
-                  className="relative w-full h-36 rounded-xl overflow-hidden mb-3 bg-pastel-cream cursor-pointer"
-                  onClick={() => setSelectedImage(bracelet.imagen_url)}
-                >
-                  <img
-                    src={bracelet.imagen_url}
-                    alt={bracelet.nombre}
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                    onError={handleImageError}
-                  />
-                  <div className={`absolute top-2 right-2 px-2 py-0.5 rounded-full text-xs font-semibold ${
-                    bracelet.estado?.toLowerCase() === 'disponible'
-                      ? 'bg-green-100 text-green-700'
-                      : bracelet.estado?.toLowerCase() === 'oferta'
-                      ? 'bg-yellow-100 text-yellow-700'
-                      : 'bg-red-100 text-red-700'
-                  }`}>
-                    {bracelet.estado?.toLowerCase() === 'disponible' ? t('available') : bracelet.estado?.toLowerCase() === 'oferta' ? t('onSale') : t('notAvailable')}
-                  </div>
-                </div>
-                <div className="text-center">
-                  <h3 className="font-display text-sm font-semibold text-gray-700 mb-1">
-                    {bracelet.nombre}
-                  </h3>
-                  <p className="text-primary-dark font-bold text-base">
-                    {bracelet.precio || t('price')}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>)}
-
-          {/* Vista escritorio: scroll horizontal */}
-          <div
-            ref={scrollRef}
-            className="hidden md:flex gap-6 overflow-x-auto scrollbar-hide pb-4 px-2"
-            style={{ scrollSnapType: 'x mandatory' }}
-          >
-            {bracelets.map((bracelet, index) => (
-              <div
-                key={index}
-                className="flex-shrink-0 w-72 bg-white rounded-2xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                style={{ scrollSnapAlign: 'start' }}
-              >
-                <div
-                  className="relative w-full h-48 rounded-xl overflow-hidden mb-4 bg-pastel-cream cursor-pointer"
-                  onClick={() => setSelectedImage(bracelet.imagen_url)}
-                >
-                  <img
-                    src={bracelet.imagen_url}
-                    alt={bracelet.nombre}
-                    className="w-full h-full object-cover hover:scale-110 transition-transform duration-500"
-                    onError={handleImageError}
-                  />
-                  <div className={`absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold ${
-                    bracelet.estado?.toLowerCase() === 'disponible'
-                      ? 'bg-green-100 text-green-700'
-                      : bracelet.estado?.toLowerCase() === 'oferta'
-                      ? 'bg-yellow-100 text-yellow-700'
-                      : 'bg-red-100 text-red-700'
-                  }`}>
-                    {bracelet.estado?.toLowerCase() === 'disponible' ? t('available') : bracelet.estado?.toLowerCase() === 'oferta' ? t('onSale') : t('notAvailable')}
-                  </div>
-                </div>
-                <div className="text-center">
-                  <h3 className="font-display text-lg font-semibold text-gray-700 mb-2">
-                    {bracelet.nombre}
-                  </h3>
-                  <p className="text-primary-dark font-bold text-xl">
-                    {bracelet.precio || t('price')}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        
       </div>
 
       {selectedImage && (
